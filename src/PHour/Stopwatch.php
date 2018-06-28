@@ -60,16 +60,12 @@ class Stopwatch {
     }
 
     private function resolveElapsedMicroseconds() {
-        if ($this->elapsedMilliseconds < 1000) {
-            $this->elapsedMicroseconds = $this->absElapsedMicroseconds % 1000;
-        }
+        $this->elapsedMicroseconds = $this->absElapsedMicroseconds % 1000;
     }
 
     private function resolveElapsedMilliseconds($initialMicroseconds, $finalMicroseconds) {
         $this->absElapsedMicroseconds = abs($finalMicroseconds - $initialMicroseconds);
-        if ($this->absElapsedMicroseconds < 1000000) {
-            $this->elapsedMilliseconds = floor($this->absElapsedMicroseconds / 1000);
-        }
+        $this->elapsedMilliseconds = floor($this->absElapsedMicroseconds * 1000);
     }
 
 }

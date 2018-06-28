@@ -5,11 +5,12 @@ namespace PHour;
 class Stopwatch {
 
     private $startingTime;
-    private $stoppingTime;
     private $elapsedMicroseconds;
     private $elapsedMilliseconds;
     private $elapsedSeconds;
     private $elapsedMinutes;
+    private $absElapsedMicroseconds;
+    private $absElapsedSeconds;
 
     function __construct() {
 
@@ -41,20 +42,13 @@ class Stopwatch {
     }
 
     function stop() {
-        $this->stoppingTime = microtime();
+        $stoppingTime = microtime();
 
         list($initialMicroseconds, $initialSeconds) = explode(' ', $this->startingTime);
-        list($finalMicroseconds, $finalSeconds) = explode(' ', $this->stoppingTime);
+        list($finalMicroseconds, $finalSeconds) = explode(' ', $stoppingTime);
 
-        $elapsedMicroseconds = abs($finalMicroseconds - $initialMicroseconds);
-//        can to do also convert the difference between seconds to microsecond and add with this, and only after that calculate seconds, minutes, etc. but the base would be the smallest unit
-        $this->elapsedMilliseconds = round($elapsedMicroseconds / 1000);
-
-        if ($this->elapsedMilliseconds) {
-            $this->elapsedMicroseconds = ($this->elapsedMilliseconds * 1000) - $elapsedMicroseconds;
-        } else {
-            $this->elapsedMicroseconds = $elapsedMicroseconds;
-        }
+        $this->resolveElapsedMilliseconds($initialMicroseconds, $finalMicroseconds);
+        $this->resolveElapsedMicroseconds();
 
         $elapsedSeconds = abs($finalSeconds - $initialSeconds);
         $this->elapsedMinutes = round($elapsedSeconds / 60);
@@ -62,6 +56,19 @@ class Stopwatch {
             $this->elapsedSeconds = ($this->elapsedMinutes * 60) - $elapsedSeconds;
         } else {
             $this->elapsedSeconds = $elapsedSeconds;
+        }
+    }
+
+    private function resolveElapsedMicroseconds() {
+        if ($this->elapsedMilliseconds < 1000) {
+            $this->elapsedMicroseconds = $this->absElapsedMicroseconds % 1000;
+        }
+    }
+
+    private function resolveElapsedMilliseconds($initialMicroseconds, $finalMicroseconds) {
+        $this->absElapsedMicroseconds = abs($finalMicroseconds - $initialMicroseconds);
+        if ($this->absElapsedMicroseconds < 1000000) {
+            $this->elapsedMilliseconds = floor($this->absElapsedMicroseconds / 1000);
         }
     }
 

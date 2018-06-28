@@ -1,7 +1,7 @@
 {
-  "name": "GraphIte",
+  "name": "PHour",
   "version": "1.0.0",
-  "homepage": "https://github.com/rplaurindo/graphite",
+  "homepage": "https://github.com/rplaurindo/phour",
   "description": "",
   "type": "library",
   "license": "MIT",
@@ -13,7 +13,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "GraphIte\\": [
+      "PHour\\": [
         "src/",
         "lib/"
       ]

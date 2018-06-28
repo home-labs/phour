@@ -59,13 +59,9 @@ class Stopwatch {
         }
     }
 
-    private function resolveElapsedMicroseconds() {
-        $this->elapsedMicroseconds = $this->absElapsedMicroseconds % 1000;
-    }
-
     private function resolveElapsedMilliseconds($initialMicroseconds, $finalMicroseconds) {
-        $this->absElapsedMicroseconds = abs($finalMicroseconds - $initialMicroseconds);
-        $this->elapsedMilliseconds = floor($this->absElapsedMicroseconds * 1000);
+        $this->absElapsedMicroseconds = abs($finalMicroseconds - $initialMicroseconds) * 1000000;
+        $this->elapsedMilliseconds = floor($this->absElapsedMicroseconds / 1000);
     }
 
 }

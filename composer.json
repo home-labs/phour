@@ -1,0 +1,22 @@
+{
+  "name": "GraphIte",
+  "version": "1.0.0",
+  "homepage": "https://github.com/rplaurindo/graphite",
+  "description": "",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rafael Laurindo",
+      "email": "rafaelplaurindo@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "GraphIte\\": [
+        "src/",
+        "lib/"
+      ]
+    }
+  }
+}

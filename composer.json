@@ -2,7 +2,7 @@
   "name": "rplaurindo/phour",
   "version": "1.0.0",
   "homepage": "https://github.com/rplaurindo/phour",
-  "description": "",
+  "description": "A PHP Stopwatch.",
   "type": "library",
   "license": "MIT",
   "authors": [

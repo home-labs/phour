@@ -67,16 +67,13 @@ class Stopwatch {
     }
     
     private function calculateElapsedHours() {
-        $containedSecondsInMinute = 60;
-        $containedSecondsInHour = $containedSecondsInMinute * 60;
-        $this->elapsedHours = intval($this->absElapsedSeconds / $containedSecondsInHour);
+        $this->elapsedHours = intval($this->absElapsedSeconds / (60 * 60));
     }
     
     private function calculateElapsedMinutes() {
-        $containedSecondsInMinute = 60;
-        $containedSecondsInHour = $containedSecondsInMinute * 60;
-        $this->elapsedMinutes = intval($this->absElapsedSeconds / $containedSecondsInMinute) - 
-            intval($this->absElapsedSeconds / $containedSecondsInHour);
+        $containedHours = intval($this->absElapsedSeconds / (60 * 60));
+        $absMinutes = intval($this->absElapsedSeconds / 60);
+        $this->elapsedMinutes = $absMinutes - ($containedHours * 60);
     }
 
     private function calculateElapsedSeconds() {

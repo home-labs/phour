@@ -11,14 +11,14 @@ use PHour\Stopwatch;
 $timing = new Stopwatch();
 $timing->start();
 
-usleep(3 * 1000000);
+usleep(800);
 
 $timing->stop();
 
-printf("%02u:%02u:%02u.%03.0f.%03.0f", 
+printf("%02u:%02u:%02u.%003u.%003u",
     $timing->getElapsedHours(),
-    $timing->getElapsedMinutes(), 
+    $timing->getElapsedMinutes(),
     $timing->getElapsedSeconds(),
-    $timing->getElapsedMilliseconds(), 
+    $timing->getElapsedMilliseconds(),
     $timing->getElapsedMicroseconds()
 );

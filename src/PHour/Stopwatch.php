@@ -50,12 +50,13 @@ class Stopwatch {
     }
 
     function stop() {
+//         returns a string in format "microseconds seconds", but the microseconds value it's expressed in seconds
         $finalTime = microtime();
 
         list($initialMicroseconds, $initialSeconds) = explode(' ', $this->initialTime);
         list($finalMicroseconds, $finalSeconds) = explode(' ', $finalTime);
         
-        $this->absElapsedMicroseconds = $finalMicroseconds - $initialMicroseconds;
+        $this->absElapsedMicroseconds = intval(abs($finalMicroseconds - $initialMicroseconds) * 1000000);
         $this->absElapsedSeconds = $finalSeconds - $initialSeconds;
         
         $this->calculateElapsedHours();
@@ -79,16 +80,17 @@ class Stopwatch {
     }
 
     private function calculateElapsedSeconds() {
-        $this->elapsedSeconds = $this->absElapsedSeconds - intval($this->absElapsedSeconds / 60);
+        $containedMinutes = intval($this->absElapsedSeconds / 60);
+        $this->elapsedSeconds = $this->absElapsedSeconds - ($containedMinutes * 60);
     }
 
     private function calculateElapsedMilliseconds() {
-        $this->elapsedMilliseconds = floor($this->absElapsedMicroseconds / 1000);
+        $this->elapsedMilliseconds = intval($this->absElapsedMicroseconds / 1000);
     }
     
     private function calculateElapsedMicroseconds() {
-        $this->elapsedMicroseconds = $this->absElapsedMicroseconds - 
-            floor($this->absElapsedMicroseconds / 1000);
+        $containedMilliseconds = intval($this->absElapsedMicroseconds / 1000);
+        $this->elapsedMicroseconds = $this->absElapsedMicroseconds - ($containedMilliseconds * 1000);
     }
 
 }

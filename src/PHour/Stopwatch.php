@@ -4,81 +4,90 @@ namespace PHour;
 
 class Stopwatch {
 
-    private $startingTime;
+    private $initialTime;
+    
     private $relativeElapsedMicroseconds;
-    private $relativeElapsedMilliseconds;
-    private $relativeElapsedMinutes;
     private $absElapsedSeconds;
-    private $relativeElapsedSeconds;
-//    private $totalElapsedMicroseconds;
+    
+    private $elapsedMicroseconds;
+    private $elapsedMilliseconds;
+    private $elapsedSeconds;
+    private $elapsedMinutes;
+    private $elapsedHours;
 
     function __construct() {
 
     }
-
-    function getRelativeElapsedMicroseconds() {
-        return $this->relativeElapsedMicroseconds;
+    
+    function getElapsedHours() {
+        return $this->elapsedHours;
+    }
+    
+    function getElapsedMinutes() {
+        return $this->elapsedMinutes;
+    }
+    
+    function getElapsedSeconds() {
+        return $this->elapsedSeconds;
+    }
+    
+    function getElapsedMilliseconds() {
+        return $this->elapsedMilliseconds;
     }
 
-    function getRelativeElapsedMilliseconds() {
-        return $this->relativeElapsedMilliseconds;
-    }
-
-    function getRelativeElapsedSeconds() {
-        return $this->relativeElapsedSeconds;
-    }
-
-    function getRelativeElapsedMinutes() {
-        return $this->relativeElapsedMinutes;
+    function getElapsedMicroseconds() {
+        return $this->elapsedMicroseconds;
     }
 
     function start() {
-        $this->startingTime = microtime();
+        $this->initialTime = microtime();
 
-        $this->relativeElapsedMicroseconds = 0;
-        $this->relativeElapsedMilliseconds = 0;
-        $this->relativeElapsedSeconds = 0;
-        $this->relativeElapsedMinutes = 0;
+        $this->elapsedMicroseconds = 0;
+        $this->elapsedMilliseconds = 0;
+        $this->elapsedSeconds = 0;
+        $this->elapsedMinutes = 0;
+        $this->elapsedHours = 0;
     }
 
     function stop() {
-        $stoppingTime = microtime();
+//         returns a string in format "microseconds seconds", but the microseconds value it's expressed in seconds
+        $finalTime = microtime();
 
-        list($initialMicroseconds, $initialSeconds) = explode(' ', $this->startingTime);
-        list($finalMicroseconds, $finalSeconds) = explode(' ', $stoppingTime);
-
-        $this->resolveRelativeElapsedMilliseconds($initialMicroseconds, $finalMicroseconds);
-        $this->resolveRelativeElapsedMicroseconds();
-
-        $this->resolveRelativeElapsedMinutes($initialSeconds, $finalSeconds);
-        $this->resolveRelativeElapsedSeconds();
+        list($initialMicroseconds, $initialSeconds) = explode(' ', $this->initialTime);
+        list($finalMicroseconds, $finalSeconds) = explode(' ', $finalTime);
+        
+        $this->relativeElapsedMicroseconds = intval(abs($finalMicroseconds - $initialMicroseconds) * 1000000);
+        $this->absElapsedSeconds = $finalSeconds - $initialSeconds;
+        
+        $this->calculateElapsedMicroseconds();
+        $this->calculateElapsedMilliseconds();
+        $this->calculateElapsedSeconds();
+        $this->calculateElapsedMinutes();
+        $this->calculateElapsedHours();
+    }
+    
+    private function calculateElapsedHours() {
+        $this->elapsedHours = intval($this->absElapsedSeconds / (60 * 60));
+    }
+    
+    private function calculateElapsedMinutes() {
+        $containedHours = intval($this->absElapsedSeconds / (60 * 60));
+        $absMinutes = intval($this->absElapsedSeconds / 60);
+        $this->elapsedMinutes = $absMinutes - ($containedHours * 60);
     }
 
-    private function resolveRelativeElapsedSeconds() {
-        $this->relativeElapsedSeconds = $this->absElapsedSeconds % 60;
+    private function calculateElapsedSeconds() {
+        $containedMinutes = intval($this->absElapsedSeconds / 60);
+        $this->elapsedSeconds = $this->absElapsedSeconds - ($containedMinutes * 60);
     }
 
-    private function resolveRelativeElapsedMinutes($initialSeconds, $finalSeconds) {
-        $this->absElapsedSeconds = abs($finalSeconds - $initialSeconds);
-        $relativeElapsedMinutes = floor($this->absElapsedSeconds / 60);
-        if ($relativeElapsedMinutes < 60) {
-            $this->relativeElapsedMinutes = $relativeElapsedMinutes;
-        }
+    private function calculateElapsedMilliseconds() {
+        $this->elapsedMilliseconds = intval($this->relativeElapsedMicroseconds / 1000);
     }
-
-    private function resolveRelativeElapsedMicroseconds() {
-        $this->relativeElapsedMicroseconds = $this->relativeElapsedMicroseconds % 1000;
+    
+    private function calculateElapsedMicroseconds() {
+        $containedMilliseconds = intval($this->relativeElapsedMicroseconds / 1000);
+        $this->elapsedMicroseconds = $this->relativeElapsedMicroseconds - ($containedMilliseconds * 1000);
     }
-
-    private function resolveRelativeElapsedMilliseconds($initialRelativeMicroseconds, $finalRelativeMicroseconds) {
-        $this->relativeElapsedMicroseconds = abs($finalRelativeMicroseconds - $initialRelativeMicroseconds) * 1000000;
-//        printf("%03.6f", abs($finalRelativeMicroseconds - $initialRelativeMicroseconds));
-//        echo "\n";
-        $this->relativeElapsedMilliseconds = floor($this->relativeElapsedMicroseconds / 1000);
-    }
-
-//    private function setTotalElapsedTime($relativeElapsedMicroseconds, $relativeElapsedSeconds) {
-//        $this->totalElapsedMicroseconds = ($relativeElapsedMicroseconds * 1000000) + ($relativeElapsedSeconds * 1000000);
-//    }
 
 }

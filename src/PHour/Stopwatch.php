@@ -4,10 +4,10 @@ namespace PHour;
 
 class Stopwatch {
 
-    private $initialTime;
-    
-    private $relativeElapsedMicroseconds;
-    private $absElapsedSeconds;
+    private $initialSeconds;
+    private $initialRelativeMicroseconds;
+    private $currentAbsElapsedSeconds;
+    private $currentRelativeElapsedMicroseconds;
     
     private $elapsedMicroseconds;
     private $elapsedMilliseconds;
@@ -15,9 +15,7 @@ class Stopwatch {
     private $elapsedMinutes;
     private $elapsedHours;
 
-    function __construct() {
-
-    }
+    function __construct() { }
     
     function getElapsedHours() {
         return $this->elapsedHours;
@@ -40,7 +38,9 @@ class Stopwatch {
     }
 
     function start() {
-        $this->initialTime = microtime();
+        $initialTime = microtime();
+        
+        list($this->initialRelativeMicroseconds, $this->initialSeconds) = explode(' ', $initialTime);
 
         $this->elapsedMicroseconds = 0;
         $this->elapsedMilliseconds = 0;
@@ -50,15 +50,6 @@ class Stopwatch {
     }
 
     function stop() {
-//         returns a string in format "microseconds seconds", but the microseconds value it's expressed in seconds
-        $finalTime = microtime();
-
-        list($initialMicroseconds, $initialSeconds) = explode(' ', $this->initialTime);
-        list($finalMicroseconds, $finalSeconds) = explode(' ', $finalTime);
-        
-        $this->relativeElapsedMicroseconds = intval(abs($finalMicroseconds - $initialMicroseconds) * 1000000);
-        $this->absElapsedSeconds = $finalSeconds - $initialSeconds;
-        
         $this->calculateElapsedMicroseconds();
         $this->calculateElapsedMilliseconds();
         $this->calculateElapsedSeconds();
@@ -66,28 +57,43 @@ class Stopwatch {
         $this->calculateElapsedHours();
     }
     
+    private function catchTime() {
+        $currentTime = microtime();
+        list($currentRelativeMicroseconds, $currentSeconds) = explode(' ', $currentTime);
+        $this->currentRelativeElapsedMicroseconds = intval(
+               abs($currentRelativeMicroseconds - 
+                   $this->initialRelativeMicroseconds) * 1000000
+            );
+        $this->currentAbsElapsedSeconds = $currentSeconds - $this->initialSeconds;
+    }
+    
     private function calculateElapsedHours() {
-        $this->elapsedHours = intval($this->absElapsedSeconds / (60 * 60));
+        $this->catchTime();
+        $this->elapsedHours = intval($this->currentAbsElapsedSeconds / (60 * 60));
     }
     
     private function calculateElapsedMinutes() {
-        $containedHours = intval($this->absElapsedSeconds / (60 * 60));
-        $absMinutes = intval($this->absElapsedSeconds / 60);
+        $this->catchTime();
+        $containedHours = intval($this->currentAbsElapsedSeconds / (60 * 60));
+        $absMinutes = intval($this->currentAbsElapsedSeconds / 60);
         $this->elapsedMinutes = $absMinutes - ($containedHours * 60);
     }
 
     private function calculateElapsedSeconds() {
-        $containedMinutes = intval($this->absElapsedSeconds / 60);
-        $this->elapsedSeconds = $this->absElapsedSeconds - ($containedMinutes * 60);
+        $this->catchTime();
+        $containedMinutes = intval($this->currentAbsElapsedSeconds / 60);
+        $this->elapsedSeconds = $this->currentAbsElapsedSeconds - ($containedMinutes * 60);
     }
 
     private function calculateElapsedMilliseconds() {
-        $this->elapsedMilliseconds = intval($this->relativeElapsedMicroseconds / 1000);
+        $this->catchTime();
+        $this->elapsedMilliseconds = intval($this->currentRelativeElapsedMicroseconds / 1000);
     }
     
     private function calculateElapsedMicroseconds() {
-        $containedMilliseconds = intval($this->relativeElapsedMicroseconds / 1000);
-        $this->elapsedMicroseconds = $this->relativeElapsedMicroseconds - ($containedMilliseconds * 1000);
+        $this->catchTime();
+        $containedMilliseconds = intval($this->currentRelativeElapsedMicroseconds / 1000);
+        $this->elapsedMicroseconds = $this->currentRelativeElapsedMicroseconds - ($containedMilliseconds * 1000);
     }
 
 }

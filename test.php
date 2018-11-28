@@ -11,7 +11,7 @@ use PHour\Stopwatch;
 $timing = new Stopwatch();
 $timing->start();
 
-usleep(800);
+usleep(1000000);
 
 $timing->stop();
 

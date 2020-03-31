@@ -16,7 +16,9 @@
   },
   "autoload": {
     "psr-4": {
-      "PHour\\": "src/"
+      "PHour\\": [
+      	"src"
+      ]
     }
   }
 }
